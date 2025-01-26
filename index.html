@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ blog.title if blog else 'Blogging Platform' }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .login-register {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-register a {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 10px;
+        }
+        .login-register a:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        .search-bar {
+            margin-bottom: 30px;
+            padding: 12px 20px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            margin: 0 auto;
+            display: block;
+            font-size: 1.1em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .blog-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        .card {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 10px;
+            color: white;
+            padding: 20px;
+            width: calc(33% - 20px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        .card p {
+            margin: 10px 0;
+        }
+        .card .category {
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        .view-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .view-btn:hover {
+            background-color: #e67e22;
+            transform: scale(1.05);
+        }
+        .full-blog {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .full-blog img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .full-blog h1 {
+            font-size: 2em;
+            color: #333;
+        }
+        .full-blog p {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+        }
+        .clear-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .clear-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Blogging Platform
+    </header>
+
+    <div class="container">
+        <div class="login-register">
+            <a href="/login">Login</a> | <a href="/register">Register</a>
+        </div>
+
+        <div class="search-bar">
+            <form action="/" method="GET">
+                <input type="text" name="search" placeholder="Search for blogs..." value="{{ search_query }}">
+            </form>
+            {% if search_query %}
+                <a href="/" class="clear-btn">Clear Search</a>
+            {% endif %}
+        </div>
+
+        {% if blog %}
+            <div class="full-blog">
+                <h1>{{ blog.title }}</h1>
+                <p><strong>Category:</strong> {{ blog.category }}</p>
+                <img src="{{ blog.image_url }}" alt="Blog image">
+                <p>{{ blog.content }}</p>
+                <p><strong>Author:</strong> {{ blog.author }}</p>
+            </div>
+        {% else %}
+            {% if blogs %}
+                <div class="blog-cards">
+                    {% for blog in blogs %}
+                        <div class="card" style="background-image: url('{{ blog.image_url }}');">
+                            <div class="card-content">
+                                <h3>{{ blog.title }}</h3>
+                                <p><span class="category">Category:</span> {{ blog.category }}</p>
+                                <p>{{ blog.content[:150] }}...</p>
+                                <a href="/{{ blog.id }}" class="view-btn">View</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No blogs found.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
